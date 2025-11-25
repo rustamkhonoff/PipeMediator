@@ -1,7 +1,7 @@
 {
   "name": "com.rustamkhonoff.pipemediator.vcontainer",
   "version": "1.0.0",
-  "displayName": "PipeMediator",
+  "displayName": "PipeMediator.VContainer",
   "description": "PipeMediator extensions for VContainer",
   "unity": "2021.3",
   "unityRelease": "21f1",
