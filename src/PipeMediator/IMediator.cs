@@ -16,4 +16,9 @@ namespace PipeMediator
         UniTask Send(IRequest request, CancellationToken ct = default);
         UniTask Publish(INotification notification, CancellationToken ct = default, AsyncPublishStrategy publishStrategy = AsyncPublishStrategy.Parallel, params IAsyncMessageHandlerFilter[] filters);
     }
+
+    public interface IMediatorServiceResolver
+    {
+        T Resolve<T>();
+    }
 }

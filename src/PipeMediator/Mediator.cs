@@ -10,18 +10,17 @@ using System.Linq;
 using System.Threading;
 using Cysharp.Threading.Tasks;
 using MessagePipe;
-using VContainer;
 
 namespace PipeMediator
 {
     public class Mediator : IMediator
     {
-        private readonly IObjectResolver m_resolver;
+        private readonly IMediatorServiceResolver m_resolver;
         private readonly Dictionary<Type, INotificationHandlerWrapper> m_notificationHandlerWrappersCache = new();
         private readonly Dictionary<Type, IRequestHandlerWrapperCore> m_requestHandlerWrappersCache = new();
 
 
-        public Mediator(IObjectResolver resolver)
+        public Mediator(IMediatorServiceResolver resolver)
         {
             m_resolver = resolver;
         }
@@ -88,9 +87,9 @@ namespace PipeMediator
         private class NotificationHandlerWrapper<T> : INotificationHandlerWrapper
             where T : INotification
         {
-            private readonly IObjectResolver m_resolver;
+            private readonly IMediatorServiceResolver m_resolver;
 
-            public NotificationHandlerWrapper(IObjectResolver resolver)
+            public NotificationHandlerWrapper(IMediatorServiceResolver resolver)
             {
                 m_resolver = resolver;
             }
@@ -136,9 +135,9 @@ namespace PipeMediator
         private class RequestHandlerWrapper<TRequest, TResponse> : IRequestHandlerWrapper<TResponse>
             where TRequest : IRequest<TResponse>
         {
-            private readonly IObjectResolver m_objectResolver;
+            private readonly IMediatorServiceResolver m_objectResolver;
 
-            public RequestHandlerWrapper(IObjectResolver objectResolver)
+            public RequestHandlerWrapper(IMediatorServiceResolver objectResolver)
             {
                 m_objectResolver = objectResolver;
             }
@@ -154,9 +153,9 @@ namespace PipeMediator
         private class RequestHandlerWrapperCore<TRequest> : IRequestHandlerWrapper
             where TRequest : IRequest
         {
-            private readonly IObjectResolver m_objectResolver;
+            private readonly IMediatorServiceResolver m_objectResolver;
 
-            public RequestHandlerWrapperCore(IObjectResolver objectResolver)
+            public RequestHandlerWrapperCore(IMediatorServiceResolver objectResolver)
             {
                 m_objectResolver = objectResolver;
             }

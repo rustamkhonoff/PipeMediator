@@ -13,8 +13,23 @@ using UnityEngine;
 using VContainer;
 using ContainerBuilderExtensions = MessagePipe.ContainerBuilderExtensions;
 
-namespace PipeMediator
+namespace PipeMediator.VContainer
 {
+    public class ServiceResolver : IMediatorServiceResolver
+    {
+        private readonly IObjectResolver m_resolver;
+
+        public ServiceResolver(IObjectResolver resolver)
+        {
+            m_resolver = resolver;
+        }
+
+        public T Resolve<T>()
+        {
+            return m_resolver.Resolve<T>();
+        }
+    }
+
     public static class Extensions
     {
         public class Configuration
@@ -101,6 +116,7 @@ namespace PipeMediator
             IUMediatrHandlersCollection scan = HandlersScanner.ScanMessagePipeHandlers(assemblies);
 
             builder.Register<IMediator, Mediator>(Lifetime.Singleton);
+            builder.Register<IMediatorServiceResolver, ServiceResolver>(Lifetime.Singleton);
 
             foreach (RequestHandlerInfo info in scan.Requests)
             {
