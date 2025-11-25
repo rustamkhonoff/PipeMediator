@@ -4,6 +4,7 @@
 // Description:
 // -------------------------------------------------------------------
 
+using System;
 using System.Threading;
 using Cysharp.Threading.Tasks;
 using MessagePipe;
@@ -19,9 +20,25 @@ namespace PipeMediator
 
     public interface INotificationPipeline { }
 
-    public abstract class RequestPipeline<T1, T2> : AsyncRequestHandlerFilter<T1, T2>, IRequestPipeline { }
+    public abstract class RequestPipeline<TRequest, TResponse> : AsyncRequestHandlerFilter<TRequest, TResponse>, IRequestPipeline
+    {
+        public sealed override UniTask<TResponse> InvokeAsync(TRequest request, CancellationToken cancellationToken, Func<TRequest, CancellationToken, UniTask<TResponse>> next)
+        {
+            return Handle(request, cancellationToken, next);
+        }
 
-    public abstract class NotificationPipeline<T1> : AsyncMessageHandlerFilter<T1>, INotificationPipeline { }
+        public abstract UniTask<TResponse> Handle(TRequest request, CancellationToken ct, Func<TRequest, CancellationToken, UniTask<TResponse>> next);
+    }
+
+    public abstract class NotificationPipeline<TNotification> : AsyncMessageHandlerFilter<TNotification>, INotificationPipeline
+    {
+        public sealed override UniTask HandleAsync(TNotification notification, CancellationToken cancellationToken, Func<TNotification, CancellationToken, UniTask> next)
+        {
+            return Handle(notification, cancellationToken, next);
+        }
+
+        public abstract UniTask Handle(TNotification notification, CancellationToken cancellationToken, Func<TNotification, CancellationToken, UniTask> next);
+    }
 
     public abstract class RequestHandler<TRequest, TResponse> : IAsyncRequestHandler<TRequest, TResponse>
         where TRequest : IRequest<TResponse>
